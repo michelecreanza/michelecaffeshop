@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/css/main.css" />
+
+    <meta charset="utf-8" />
+    <title></title>
+  </head>
+  <body>
+    <div class="cart_div">
+      <a href=/products>
+        <img src="<%= product.img %>" style="width:200px;height:100px" ; />
+        Cart<span> <%= product.qty %> </span></a
+      >
+      <h4>Price: $<%=product.price * product.qty%> </h4
+        >
+
+
+           
+<form  action="/products/<%=product.id%>/remove?_method=PUT">
+
+    <input type='hidden' name='action' value='remove' >
+   <button type='submit' class='remove'>Remove Item</button>
+   </form> 
+
+
+      
+      <div class="jumbo">
+            <form
+              class="edit"
+              action="/products/<%=product.id%>?_method=PUT"
+              method="POST"
+            >
+      <label for="qty">Quantity: </label>
+      <input
+        type="number"
+        name="qty"
+        value="<%=product.qty%> || 0"
+        min="0"
+      />
+            <button type='submit' class='buy'>Add to Quantity</button>
+    
+  
+
+    <h1>CART</h1>
+
+                
+
+
+    <h1>
+      buying <%= product.qty  %> of this amazing <%= product.name  %> click
+      below for payment
+    </h1>
+    
+
+
+
+
+
+
+<div class="proBox">
+
+  <!-- Product details -->
+
+
+  <p>Name: <%= product.name  %></p>
+  <p>Price: <%=product.price * product.qty%></p>
+
+  
+  <!-- Checkout button -->
+  <div id="paypal-button"></div>
+</div>
+
+
+
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+
+
+
+<div id="paypal-button"></div>
+
+<!--
+JavaScript code to render PayPal checkout button
+and execute payment
+-->
+<script>
+paypal.Button.render({
+    // Configure environment
+    env: 'sandbox',
+    client: {
+      sandbox: 'AUwXt0B4pHvJl6tO89Y4A6hLjN5VJJc42bw4sCZ-kucX3ZuaH8kZUcDHeqIxldDgEAiHbe9bXlQItjkl',
+      production: 'demo_production_client_id'
+    },
+    // Customize button (optional)
+    locale: 'en_US',
+    style: {
+        size: 'large',
+        color: 'gold',
+        shape: 'pill',
+    },
+	
+	// Enable Pay Now checkout flow (optional)
+    commit: true,
+	
+	
+    // Set up a payment
+    payment: function (data, actions) {
+        return actions.payment.create({
+            transactions: [{
+              amount: {
+                    total: '<%=product.price * product.qty%>',
+                    
+                    currency: 'USD'
+                }
+            }]
+      });
+    },
+    // Execute the payment
+    onAuthorize: function (data, actions) {
+        return actions.payment.execute()
+        .then(function () {
+            // Show a confirmation message to the buyer
+            window.alert('Thank you for your purchase!');
+            
+            // Redirect to the payment process page
+            res.redirect("/products");
+        });
+    }
+}, '#paypal-button');
+</script>
+
+
+
+
+
+
+    <nav>
+      <a href="/products">Back to products Index</a>
+    </nav>
+  </body>
+</html>
